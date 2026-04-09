@@ -10,11 +10,7 @@ pipeline {
 
     stages {
 
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/ganesanlakz/ecommerce-devops.git'
-            }
-        }
+        
 
         stage('Build Docker Images') {
             steps {
