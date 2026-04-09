@@ -1,0 +1,25 @@
+services:
+
+  auth-service:
+    build: ./auth-service
+    image: ganesanlakz/auth-service
+    ports:
+      - "3001:3001"
+
+  product-service:
+    build: ./product-service
+    image: ganesanlakz/product-service
+    ports:
+      - "3002:3002"
+
+  order-service:
+    build: ./order-service
+    image: ganesanlakz/order-service
+    ports:
+      - "3003:3003"
+
+  api-gateway:
+    build: ./api-gateway
+    image: ganesanlakz/api-gateway
+    ports:
+      - "3000:3000"
