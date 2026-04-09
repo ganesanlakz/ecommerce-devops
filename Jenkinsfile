@@ -10,11 +10,15 @@ pipeline {
 
     stages {
 
-        
+        stage('Clean Workspace (Optional)') {
+            steps {
+                sh 'docker system prune -f || true'
+            }
+        }
 
         stage('Build Docker Images') {
             steps {
-                sh 'docker compose -f docker-compose.yml build'
+                sh 'docker-compose -f docker-compose.yml build'
             }
         }
 
@@ -23,7 +27,7 @@ pipeline {
                 withCredentials([string(credentialsId: 'docker-token', variable: 'DOCKER_PASS')]) {
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
-                        docker compose -f docker-compose.yml push
+                        docker-compose -f docker-compose.yml push
                     '''
                 }
             }
@@ -33,20 +37,21 @@ pipeline {
             steps {
                 sh '''
                 ssh -i /var/lib/jenkins/Jenkins_keypair.pem -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
-                
+
                 set -e
 
-                # Clone repo if not exists
-                if [ ! -d "ecommerce-devops" ]; then
-                    git clone https://github.com/ganesanlakz/ecommerce-devops.git
+                # Always get latest code
+                if [ -d "ecommerce-devops" ]; then
+                    rm -rf ecommerce-devops
                 fi
 
+                git clone https://github.com/ganesanlakz/ecommerce-devops.git
                 cd ecommerce-devops
 
-                # Deploy latest containers
-                docker compose down || true
-                docker compose pull
-                docker compose up -d
+                # Deploy containers
+                docker-compose down || true
+                docker-compose pull
+                docker-compose up -d
 
                 EOF
                 '''
