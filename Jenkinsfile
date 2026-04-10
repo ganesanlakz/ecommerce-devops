@@ -1,7 +1,5 @@
 pipeline {
 agent any
-
-```
 environment {
     DOCKER_USER = 'ganesanlakz'
     IMAGE_NAME = 'ecommerce-devops'
