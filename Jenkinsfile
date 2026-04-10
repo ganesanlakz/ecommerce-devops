@@ -36,47 +36,47 @@ pipeline {
         stage('Deploy to EC2 Server') {
             steps {
                 sh '''
-                ssh -i /var/lib/jenkins/Jenkins_keypair.pem -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
+ssh -i /var/lib/jenkins/Jenkins_keypair.pem -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << EOF
 
-                set -e
+set -e
 
-                echo "🚀 Connected to EC2"
+echo "🚀 Connected to EC2"
 
-                # Check Docker
-                if ! command -v docker &> /dev/null
-                then
-                    echo "Installing Docker..."
-                    sudo apt update -y
-                    sudo apt install -y docker.io
-                    sudo systemctl start docker
-                    sudo systemctl enable docker
-                fi
+# Check Docker
+if ! command -v docker &> /dev/null
+then
+    echo "Installing Docker..."
+    sudo apt update -y
+    sudo apt install -y docker.io
+    sudo systemctl start docker
+    sudo systemctl enable docker
+fi
 
-                # Check Docker Compose (v2)
-                if ! docker compose version &> /dev/null
-                then
-                    echo "Installing Docker Compose v2..."
-                    sudo mkdir -p /usr/libexec/docker/cli-plugins
-                    sudo curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o /usr/libexec/docker/cli-plugins/docker-compose
-                    sudo chmod +x /usr/libexec/docker/cli-plugins/docker-compose
-                fi
+# Check Docker Compose (v2)
+if ! docker compose version &> /dev/null
+then
+    echo "Installing Docker Compose v2..."
+    sudo mkdir -p /usr/libexec/docker/cli-plugins
+    sudo curl -SL https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-linux-x86_64 -o /usr/libexec/docker/cli-plugins/docker-compose
+    sudo chmod +x /usr/libexec/docker/cli-plugins/docker-compose
+fi
 
-                # Remove old project
-                rm -rf ecommerce-devops
+# Remove old project
+rm -rf ecommerce-devops
 
-                # Clone latest code
-                git clone https://github.com/ganesanlakz/ecommerce-devops.git
-                cd ecommerce-devops
+# Clone latest code
+git clone https://github.com/ganesanlakz/ecommerce-devops.git
+cd ecommerce-devops
 
-                # Deploy containers
-                sudo docker compose down || true
-                sudo docker compose pull
-                sudo docker compose up -d
+# Deploy containers
+sudo docker compose down || true
+sudo docker compose pull
+sudo docker compose up -d
 
-                echo "✅ Deployment completed"
+echo "✅ Deployment completed"
 
-                EOF
-                '''
+EOF
+'''
             }
         }
     }
