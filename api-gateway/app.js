@@ -12,4 +12,4 @@ app.get('/products', async (req, res) => {
     res.json(response.data);
 });
 
-app.listen(3000, () => console.log("API Gateway running on 3000"));
+app.listen(3004, () => console.log("API Gateway running on 3004"));

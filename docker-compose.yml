@@ -22,4 +22,4 @@ services:
     build: ./api-gateway
     image: ganesanlakz/api-gateway
     ports:
-      - "3000:3000"
+      - "3004:3004"
